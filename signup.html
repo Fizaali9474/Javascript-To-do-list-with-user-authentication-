@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="signup.css">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@700&display=swap" rel="stylesheet">
+    
+
+    <title>Sign Up</title>
+    <!-- Add CSS here -->
+    <script>
+        function redirectToLogin() {
+            window.location.href = './login.html';
+        }
+
+        function signUp(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Check if user already exists
+            if (localStorage.getItem(email)) {
+                alert('User already exists. Please log in.');
+                redirectToLogin();
+                return;
+            }
+
+            // Store the user's details in local storage
+            localStorage.setItem(email, JSON.stringify({ name, password }));
+            alert('Signup successful!');
+
+            // Redirect to login page
+            redirectToLogin();
+        }
+    </script>
+</head>
+<body>
+    <h1 id="sign" >SIGN UP.</h1><br>
+    <form id="signup-form">
+        
+        <input type="text" id="name" placeholder="Name" required><br><br>
+        <input type="email" id="email" placeholder="Email" required><br><br>
+        <input type="password" id="password" placeholder="Password" required><br><br>
+        <button   class="neon-button" id="btn"  type="submit">SignUp</button>
+    </form>
+    <h1  id="log">Login! </h1>
+     <button  class="neon-button" id="bn"  onclick="redirectToLogin()">Login </button></p>
+
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', signUp);
+    </script>
+</body>
+</html>

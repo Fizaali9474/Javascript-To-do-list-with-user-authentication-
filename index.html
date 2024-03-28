@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@700&display=swap" rel="stylesheet">
+
+    <title>Landing Page</title>
+    <style>
+        /* Add CSS Styles as needed */
+        body { font-family: Arial, sans-serif; }
+        .button { padding: 10px 15px; margin: 5px; }
+        
+    </style>
+</head>
+<body>
+    <h1> Hey Welcome to our page</h1>
+    <button   class="button" id="signup">Sign Up</button>
+    <button class="button" id="login">Login</button>
+
+    <script>
+        document.getElementById('signup').addEventListener('click', function() {
+            window.location.href = './signup.html';
+        });
+
+        document.getElementById('login').addEventListener('click', function() {
+            window.location.href = './login.html';
+        });
+    </script>
+</body>
+</html>

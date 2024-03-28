@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="todo.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+    <title>Todo Page</title>
+    <!-- Add CSS here -->
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .edit-btn, .delete-btn {
+            cursor: pointer;
+            color: blue;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <button id="out" class="neon-button" type="button" onclick="logout()">Logout</button>
+    <h1  id="todo" >Add To-do List.</h1>
+    <div id="greeting"></div>
+    
+    <!-- Add form for adding todos -->
+    <form id="todoForm">
+        <label id="too" for="todoInput">  Todo.</label>
+        <input   type="text" id="todoInput" required><br><br>
+        
+        <label  id="des" for="descriptionInput">Description.</label>
+        <input type="text" id="descriptionInput" required>
+
+        <button     id="to" class="neon-button" type="button" onclick="addTodo()">Add</button>
+        <button id="del"  class="neon-button"  type="button" onclick="deleteAll()">Delete All</button>
+    </form>
+
+    <!-- Todo list table -->
+    <table id="todoTable">
+        <thead>
+            <tr id="trd"   >
+                <th>Serial No</th>
+                <th>Todo Item</th>
+                <th>Description</th>
+                <th><i class="fa-solid fa-pen-to-square"></i> Edit</th>
+                <th> <i class="fa-solid fa-trash"></i>  Delete</th>
+            </tr>
+        </thead>
+        <tbody id="todoListBody">
+            <th>   <i class="fa-solid fa-pen-to-square"></i> </th>
+
+            <!-- Todo items will be added here dynamically -->
+        </tbody>
+    </table>
+<!-- ... (your existing HTML code) ... -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentUser = sessionStorage.getItem('currentUser');
+        if (!currentUser) {
+            alert('No user found. Please login.');
+            window.location.href = './login.html';
+        } else {
+            const userData = JSON.parse(localStorage.getItem(currentUser));
+            document.getElementById('greeting').textContent = `Welcome, ${userData.name}`;
+        }
+    });
+
+    function addTodo() {
+        const todoInput = document.getElementById('todoInput').value;
+        const descriptionInput = document.getElementById('descriptionInput').value;
+
+        // Validate input
+        if (!todoInput || !descriptionInput) {
+            alert('Please enter both todo and description.');
+            return;
+        }
+
+        // Get the existing todos or initialize an empty array
+        const todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+        // Add the new todo
+        todos.push({ todo: todoInput, description: descriptionInput });
+
+        // Save the updated todos
+        localStorage.setItem('todos', JSON.stringify(todos));
+
+        // Clear input fields
+        document.getElementById('todoInput').value = '';
+        document.getElementById('descriptionInput').value = '';
+
+        // Render the todos
+        renderTodos();
+    }
+
+    function renderTodos() {
+        const todoListBody = document.getElementById('todoListBody');
+        todoListBody.innerHTML = ''; // Clear existing rows
+
+        // Get the todos from localStorage
+        const todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+        // Loop through todos and create table rows
+        todos.forEach((todo, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${todo.todo}</td>
+                <td>${todo.description}</td>
+                <td><span class="edit-btn" onclick="editTodo(${index})">&#9998;</span></td>
+                <td><span class="delete-btn" onclick="deleteTodo(${index})">&#128465;</span></td>
+            `;
+            todoListBody.appendChild(row);
+        });
+    }
+
+    
+    function logout() {
+            // Clear the current user session
+            sessionStorage.removeItem('currentUser');
+
+            // Redirect to the landing page (index.html)
+            window.location.href = './index.html';
+        }
+
+    function deleteAll() {
+            // Ask for confirmation before deleting all todos
+            const confirmDelete = confirm('Are you sure you want to delete all todos?');
+            if (confirmDelete) {
+                // Remove all todos from localStorage
+                localStorage.removeItem('todos');
+
+                // Render the updated todos (empty list)
+                renderTodos();
+            }
+        }
+
+    function editTodo(index) {
+    // Implement edit functionality here if needed
+    // You can pre-fill the form with the existing todo data for editing
+    // and update the localStorage accordingly
+    // Remember to call renderTodos() after updating the todo
+    const todos = JSON.parse(localStorage.getItem('todos')) || [];
+    const todoToEdit = todos[index];
+
+    // Check if todoToEdit is defined (indicating edit mode)
+    if (todoToEdit) {
+        // Prompt the user for the new todo value
+        const newTodo = prompt('Edit Todo:', todoToEdit.todo);
+
+        // Update the todo only if the user entered a new value
+        if (newTodo !== null) {
+            todoToEdit.todo = newTodo;
+            localStorage.setItem('todos', JSON.stringify(todos));
+
+            // Render the updated todos
+            renderTodos();
+        }
+    } else {
+        // Handle the case where todoToEdit is not defined (e.g., user clicked edit without selecting a todo)
+        alert('Please select a todo to edit.');
+    }
+}
+
+
+    function deleteTodo(index) {
+        // Implement delete functionality here
+        // You need to remove the todo at the specified index from localStorage
+        // and then call renderTodos() to update the todo list on the page
+        const todos = JSON.parse(localStorage.getItem('todos')) || [];
+        todos.splice(index, 1);
+        localStorage.setItem('todos', JSON.stringify(todos));
+
+        // Render the updated todos
+        renderTodos();
+    }
+
+    // Initial rendering of todos
+    renderTodos();
+</script>
+</body>
+</html>
+
+
+
+
+
+   
+    
+</body>
+</html>
